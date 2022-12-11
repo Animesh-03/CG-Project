@@ -49,30 +49,43 @@ namespace PerlinNoise {
 class PerlinNoise
 {
 private:
-	static inline float fade(float t)
+	//! The smoothing function defined Ken Perlin
+	float fade(float t)
 	{
-		return pow(t, 3.0f) * (t * (t * 6.0f - 15.0f) + 10.0f); // 6t^5 + 
+		return pow(t, 3.0f) * (t * (t * 6.0f - 15.0f) + 10.0f); // 6t^5 - 15t^4 + 10t^3
 	}
-
-	static inline float Lerp(float a, float b, float t)
+	//! Returns the linearly interpolated value between a and b based on the value of t
+	float Lerp(float a, float b, float t)
 	{
 		return (a * (1.0f - t)) + (b * t);
 	}
 
 public:
-	static inline float Gradient(int hash, float x, float y, float z)
+	//! Returns a pseudo random float based on the co-ordinates x, y, ,z and the hash value
+	/*!
+		\param x x-coordinate of a point
+		\param y y-coordinate of a point
+		\param z z-coordinate of a point
+	*/
+	float Gradient(int hash, float x, float y, float z)
 	{
 		const int h = hash & 15;
 		const float u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
 		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 	}
 
-	static inline float GetValue(float x, float y, float z)
+	//! Returns a pseduo random noise value baased on the given co-oridnates
+	/*!
+		\param x x-coordinate of a point
+		\param y y-coordinate of a point
+		\param z z-coordinate of a point
+	*/
+	float GetValue(float x, float y, float z)
 	{
 		// Unit coordinates in cube
-		const int unit_x = int(floor(x)) & 255;
-		const int unit_y = int(floor(y)) & 255;
-		const int unit_z = int(floor(z)) & 255;
+		const int X = int(floor(x)) & 255;
+		const int Y = int(floor(y)) & 255;
+		const int Z = int(floor(z)) & 255;
 
 		// Relative coordinates in cube
 		x = x - floor(x);
@@ -85,12 +98,12 @@ public:
 		const float w = fade(z);
 
 		// Hash cube coordinates
-		const int a = Perm[unit_x] + unit_y;
-		const int aa = Perm[a] + unit_z;
-		const int ab = Perm[a + 1] + unit_z;
-		const int b = Perm[unit_x + 1] + unit_y;
-		const int ba = Perm[b] + unit_z;
-		const int bb = Perm[b + 1] + unit_z;
+		const int a = Perm[X] + Y;
+		const int aa = Perm[a] + Z;
+		const int ab = Perm[a + 1] + Z;
+		const int b = Perm[X + 1] + Y;
+		const int ba = Perm[b] + Z;
+		const int bb = Perm[b + 1] + Z;
 
 		// Interpolate results
 		const float l1 = Lerp(Gradient(Perm[aa], x, y, z), Gradient(Perm[ba], x - 1, y, z), u);
@@ -118,7 +131,7 @@ public:
             float lacunarity;       /*!< Determines the scale that each octave should use.
                                         Values are greater than 1  */
             float amplitude;        /*!< Determines the maximum value of noise*/
-            int frequency;          /*!< Determines the scale of the noise */
+            int frequency;          /*!< Determines the scale of the noise. Lower values give a higher variation on the noise */
             PerlinNoise pn;
 
 
@@ -135,7 +148,6 @@ public:
             double GetPerlinNoise(double x, double y, double z)
             {
                 double value = 0, maxValue = 0;
-
 
                 float amp = amplitude, lac = lacunarity, pers = persistence, freq = frequency;
                 for(int i = 0; i < octaves; i++)

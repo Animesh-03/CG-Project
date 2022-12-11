@@ -16,10 +16,17 @@ namespace MC {
                 \param png The reference to the noise generator which assigns each point inside the domain a value
             */
             CubeDomain(int size, PerlinNoise::PerlinNoiseGenerator &png);
-            CubeDomain(int size, PerlinNoise::PerlinNoise &pn);
+            /*!
+                Creates a cubical domain with a single octave and given frequency
+                \param size Defines the size of the domain
+                \param pn The perlin noise generator to use
+                \param frequency The frequency to be used on the noise generation
+            */
+            CubeDomain(int size, PerlinNoise::PerlinNoise &pn, int frequency);
             CubeDomain();
             //! A 3D array which stores the value of each co-ordinate inside the domain
             std::vector<std::vector<std::vector<float>>> domain;
+            //! The size of the domain
             int size;
 
             void printDomain();
@@ -48,7 +55,7 @@ MC::CubeDomain::CubeDomain(int size, PerlinNoise::PerlinNoiseGenerator &png)
     }
 }
 
-MC::CubeDomain::CubeDomain(int size, PerlinNoise::PerlinNoise &pn)
+MC::CubeDomain::CubeDomain(int size, PerlinNoise::PerlinNoise &pn, int frequency)
 {
     domain = std::vector<std::vector<std::vector<float>>>(size, std::vector<std::vector<float>>(size, std::vector<float>(size, 0)));
     this->size = size;
@@ -59,7 +66,7 @@ MC::CubeDomain::CubeDomain(int size, PerlinNoise::PerlinNoise &pn)
         {
             for(int k = 0; k < size; k++)
             {
-                domain[i][j][k] = pn.GetValue(i*0.0201f,j*0.0201f,k*0.0201f);
+                domain[i][j][k] = pn.GetValue(i*frequency,j*frequency,k*frequency);
             }
         }
     }
@@ -80,8 +87,5 @@ void MC::CubeDomain::printDomain()
         std::cout << std::endl;
     }
 }
-
-
-
 
 #endif

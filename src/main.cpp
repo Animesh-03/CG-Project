@@ -16,11 +16,14 @@
 
 const short WINDOW_WIDTH = 800;
 const short WINDOW_HEIGHT = 800;
-
+//! Writes the mesh to a .obj file
+/*!
+    \param mesh Reference to the mesh file to converted
+*/
 void writeMeshToFile(MC::Mesh &mesh)
 {
     std::ofstream out;
-	out.open("test.obj");
+	out.open("mesh.obj");
 	out << "g " << "Obj" << std::endl;
 	for (size_t i = 0; i < mesh.vertices.size(); i++)
 		out << "v " << mesh.vertices.at(i).x << " " << mesh.vertices.at(i).y << " " << mesh.vertices.at(i).z << '\n';
@@ -62,10 +65,9 @@ int main()
 
     Color::HexColor clearColor = Color::HexColor(0xa030cf);
 
-    PerlinNoise::PerlinNoiseGenerator png(8, 0.3f, 2.0f, 2.5f, 23.5f);
+    PerlinNoise::PerlinNoiseGenerator png(8, 0.3f, 2.0f, 25.0f, 23.5f);
     PerlinNoise::PerlinNoise pn;
     MC::CubeDomain mcDomain(100, png);
-    std::cout << mcDomain.domain[13][24][31] << std::endl;
 
     MC::Mesh mesh;
     MC::MarchingCubes(mcDomain, mesh, 0.0f);

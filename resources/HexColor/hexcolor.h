@@ -6,6 +6,7 @@
 #include <glad/glad.h>
 
 namespace Color {
+    //! Converts a hex color string into rgb colors
     class HexColor {
         public:
             HexColor(long int hexString);
@@ -20,8 +21,6 @@ Color::HexColor::HexColor(long int hexColor)
     this->b = (color & 0xFF)/(float)255;
     this->g = (GLfloat)((color >> 8) & 0xFF)/255;
     this->r = (GLfloat)((color >> 16) & 0xFF)/255;
-
-    std::cout << this->r << " " << this->g << " " << this->b << std::endl;
 }
 
 #endif

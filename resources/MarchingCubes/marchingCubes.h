@@ -8,6 +8,7 @@
 
 namespace MC {
 
+	//! Defines all the 2^8 possible configurations of a unit cube that are possible in the algorithm
     unsigned long long int mcConfig[] = {
 		0ULL, 33793ULL, 36945ULL, 159668546ULL,
 		18961ULL, 144771090ULL, 5851666ULL, 595283255635ULL,
@@ -75,7 +76,8 @@ namespace MC {
 		143955266ULL, 2385ULL, 18433ULL, 0ULL,
 	};
 
-    typedef struct mcVec3i
+	//! Stores a 3D vector of unsigned integers
+    typedef struct Vector3Unsigned
 	{
 	public:
 		union 
@@ -87,15 +89,35 @@ namespace MC {
 			};
 		};
 		inline unsigned int& operator[](int i) { return v[i]; }
-	} mcVec3i;
+	} Vector3Unsigned;
 
+	//! Hashes the 3D co-ordinates to a 1D array
+	/*!
+		\param x x-coordinate of a point
+		\param y y-coordinate of a point
+		\param z z-coordinate of a point
+		\param size size of the domain
+	*/
     int index3DTo1D(int x, int y, int z, int size)
     {
         int temp = size * size * (z%2) + y * size + x; 
         return temp;
     }
 
-    void addEdge(mcVec3i *edgeIndexMap, Mesh &mesh, float va, float vb, int axis, int x, int y, int z, int size, float isoLevel)
+	//! Adds a vertex on the segment between va and vb if they lie on the opposite side of the isoLevel
+	/*!
+		\param edgeIndexMap Stores the index of the vertex based on the co-ordinates of the point
+		\param mesh The reference to the mesh object
+		\param va A vertex on the unit cube of marching cube
+		\param vb Another vertex on the unit cube of marching cube
+		\param x x-coordinate of a point
+		\param y y-coordinate of a point
+		\param z z-coordinate of a point
+		\param size size of the domain
+		\param isoLevel The iso-level of the domain
+
+	*/
+    void addVertex(Vector3Unsigned *edgeIndexMap, Mesh &mesh, float va, float vb, int axis, int x, int y, int z, int size, float isoLevel)
     {
         if((va < isoLevel) == (vb < isoLevel))
             return;
@@ -109,13 +131,15 @@ namespace MC {
         mesh.normals.push_back(normal);
     }
 
+	//! Calculates the normal of the triangle defined by the indices of the vertices on the mesh and adds them to the vertices
+	/*!
+		\param mesh The reference to the mesh object
+		\param i Index of vertex 1 of a traingle on the mesh
+		\param j Index of vertex 2 of a traingle on the mesh
+		\param k Index of vertex 3 of a traingle on the mesh
+	*/
     void calculateNormal(Mesh &mesh, int i, int j, int k)
     {
-        // std::cout << i << " " << j << " " << k << " " << mesh.vertices.size() << std::endl;
-
-        // if(i >= mesh.vertices.size() || j >= mesh.vertices.size() || k >= mesh.vertices.size())
-        //     return;
-
         Vector3 va = mesh.vertices[i];
         Vector3 vb = mesh.vertices[j];
         Vector3 vc = mesh.vertices[k];
@@ -124,10 +148,8 @@ namespace MC {
         Vector3 cb = vc - vb;
 
         Vector3 normal = ab.cross(cb,ab);
-        // std::cout << "normals: " << normal.length() << std::endl;
 
         mesh.normals[i] += normal;
-        // std::cout << mesh.normals[i].length() << std::endl;
         mesh.normals[j] += normal;
         mesh.normals[k] += normal;
     }
@@ -137,10 +159,10 @@ namespace MC {
     {
         float unitCubeVertices[8] = {0};
         unsigned int edgeIndices[12];
-        mcVec3i* edgeIndexMap = new mcVec3i[domain.size* domain.size * 2];
+        Vector3Unsigned* edgeIndexMap = new Vector3Unsigned[domain.size* domain.size * 2];
         for(int i = 0; i <domain.size* domain.size * 2; i++ )
         {
-            edgeIndexMap[i] = mcVec3i({0,0,0});
+            edgeIndexMap[i] = Vector3Unsigned({0,0,0});
         }
 
         for(int z = 0; z < domain.size - 1; z++)
@@ -168,28 +190,28 @@ namespace MC {
                         continue;
 
                     if (y == 0 && z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[1], 0, x, y, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[1], 0, x, y, z, domain.size, isoLevel);
 					if (z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[3], 0, x, y + 1, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[3], 0, x, y + 1, z, domain.size, isoLevel);
 					if (y == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[5], 0, x, y, z + 1, domain.size, isoLevel);
-					addEdge(edgeIndexMap, mesh, unitCubeVertices[6], unitCubeVertices[7], 0, x, y + 1, z + 1, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[5], 0, x, y, z + 1, domain.size, isoLevel);
+					addVertex(edgeIndexMap, mesh, unitCubeVertices[6], unitCubeVertices[7], 0, x, y + 1, z + 1, domain.size, isoLevel);
 
 					if (x == 0 && z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[2], 1, x, y, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[2], 1, x, y, z, domain.size, isoLevel);
 					if (z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[3], 1,x + 1, y, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[3], 1,x + 1, y, z, domain.size, isoLevel);
 					if (x == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[6], 1, x, y, z + 1, domain.size, isoLevel);
-					addEdge(edgeIndexMap, mesh, unitCubeVertices[5], unitCubeVertices[7], 1, x + 1, y, z + 1, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[6], 1, x, y, z + 1, domain.size, isoLevel);
+					addVertex(edgeIndexMap, mesh, unitCubeVertices[5], unitCubeVertices[7], 1, x + 1, y, z + 1, domain.size, isoLevel);
 
 					if (x == 0 && y == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[4], 2, x, y, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[4], 2, x, y, z, domain.size, isoLevel);
 					if (y == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[5], 2, x + 1, y, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[5], 2, x + 1, y, z, domain.size, isoLevel);
 					if (x == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[6], 2, x, y + 1, z, domain.size, isoLevel);
-					addEdge(edgeIndexMap, mesh, unitCubeVertices[3], unitCubeVertices[7], 2, x + 1, y + 1, z, domain.size, isoLevel);
+						addVertex(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[6], 2, x, y + 1, z, domain.size, isoLevel);
+					addVertex(edgeIndexMap, mesh, unitCubeVertices[3], unitCubeVertices[7], 2, x + 1, y + 1, z, domain.size, isoLevel);
 
                     edgeIndices[0] = edgeIndexMap[index3DTo1D(x, y, z, domain.size)].x;
 					edgeIndices[1] = edgeIndexMap[index3DTo1D(x, y + 1, z, domain.size)].x;
@@ -233,6 +255,5 @@ namespace MC {
         delete[] edgeIndexMap;
     }
 }
-
 
 #endif
