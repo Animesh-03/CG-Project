@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
+#include <iostream>
 
 #include "shaders/shaderClass.h"
 
@@ -31,7 +32,7 @@ namespace Camera {
             int height;
             glm::mat4 cameraMatrix;
 
-            float speed = 0.1f;
+            float speed = 0.5f;
             float sensitivity = 60.0f;
 
             bool firstClick;
@@ -60,8 +61,6 @@ void Camera::Camera::updateMatrix(float FOV, float nearClip, float farClip)
 
 void Camera::Camera::Matrix(Shader::Shader &shader, const char* uniform)
 {
-    
-
     glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 

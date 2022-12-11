@@ -23,7 +23,7 @@ namespace Buffers {
 Buffers::VBO::VBO(std::vector<MC::Vector3>& vertices, unsigned int size) {
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
 }
 
 void Buffers::VBO::Bind()
