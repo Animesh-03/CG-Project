@@ -32,14 +32,12 @@ void Buffers::VAO::Unbind()
     glBindVertexArray(0);
 }
 
-void Buffers::VAO::LinkVBO(VBO &VBO, GLuint numComponents, GLuint layout, GLenum type, GLsizeiptr stride, void* offset)
+void Buffers::VAO::LinkVBO(VBO &VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
 {
-    VBO.Bind();
-
-    glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
-    glEnableVertexAttribArray(layout);
-
-    VBO.Unbind();
+   VBO.Bind();
+	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
+	glEnableVertexAttribArray(layout);
+	VBO.Unbind();
 }
 
 void Buffers::VAO::Delete()

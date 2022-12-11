@@ -4,6 +4,7 @@
 #include<glad/glad.h>
 #include<vector>
 #include "plane.h"
+#include "mesh.h"
 
 namespace Buffers {
     class VBO {
@@ -11,7 +12,7 @@ namespace Buffers {
             // The ID allocated to the VBO
             GLuint ID;
             // VBO takes in the vertices and the size
-            VBO(std::vector<PrimitiveShapes::Vertex>& vertices);
+            VBO(std::vector<MC::Vector3>& vertices, unsigned int size);
             
             void Bind();
             void Unbind();
@@ -19,10 +20,10 @@ namespace Buffers {
     };
 }
 
-Buffers::VBO::VBO(std::vector<PrimitiveShapes::Vertex>& vertices) {
+Buffers::VBO::VBO(std::vector<MC::Vector3>& vertices, unsigned int size) {
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ARRAY_BUFFER, ID);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(PrimitiveShapes::Vertex), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 }
 
 void Buffers::VBO::Bind()

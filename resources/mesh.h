@@ -75,7 +75,7 @@ namespace MC {
         public:
             std::vector<Vector3> vertices;
             std::vector<Vector3> normals;
-            std::vector<float> indices;
+            std::vector<unsigned int> indices;
     };
 }
 

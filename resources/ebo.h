@@ -2,23 +2,24 @@
 #define EBO_H
 
 #include<glad/glad.h>
+#include <vector>
 
 namespace Buffers {
     class EBO {
         public:
             // The ID alloted to the EBO
             GLuint ID;
-            EBO(GLuint *indices, GLsizeiptr size);
+            EBO(std::vector<unsigned int>& indices, unsigned int size);
             void Bind();
             void Unbind();
             void Delete();
     };
 }
 
-Buffers::EBO::EBO(GLuint *indices, GLsizeiptr size) {
+Buffers::EBO::EBO(std::vector<unsigned int>& indices, unsigned int size) {
     glGenBuffers(1, &ID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices.data(), GL_STATIC_DRAW);
 }
 
 void Buffers::EBO::Bind()
