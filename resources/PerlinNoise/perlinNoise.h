@@ -5,50 +5,9 @@
 #include <iostream>
 
 namespace PerlinNoise {
-    //! Linearly Interpolates between a and b based on the value of t
-    double lerp(float a, float b, float t)
-    {
-        return a + t * (b - a);
-    }
-    //! The fade function defined by Ken Perlin
-    double fade(float t)
-    {
-        // std::cout << "Fade: " << pow(t, 3) * (t * (t * 6 - 15) + 10) << std:: endl;
-        return pow(t, 3.0f) * (t * (t * 6.0f - 15.0f) + 10.0f);
-    }
-
-    //! Returns a unique value for each co-ordinate given a hash value
-    double grad(int hash, double x, double y, double z)
-    {
-        // switch(hash & 0xF)
-        // {
-        //     case 0x0: return  x + y;
-        //     case 0x1: return -x + y;
-        //     case 0x2: return  x - y;
-        //     case 0x3: return -x - y;
-        //     case 0x4: return  x + z;
-        //     case 0x5: return -x + z;
-        //     case 0x6: return  x - z;
-        //     case 0x7: return -x - z;
-        //     case 0x8: return  y + z;
-        //     case 0x9: return -y + z;
-        //     case 0xA: return  y - z;
-        //     case 0xB: return -y - z;
-        //     case 0xC: return  y + x;
-        //     case 0xD: return -y + z;
-        //     case 0xE: return  y - x;
-        //     case 0xF: return -y - z;
-        //     default: return 0;
-        // }
-
-        const int h = hash & 15;
-		const float u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
-    }
-
-    //! The permutation array used by Ken Perlin for noise generation
-    static const int perm[] = {
-    151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233,
+    static const int Perm[512] =
+{
+	151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233,
 	7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23,
 	190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219,
 	203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87, 174,
@@ -85,48 +44,64 @@ namespace PerlinNoise {
 	107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176,
 	115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114,
 	67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180
-    };
+};
 
-    double perlinNoise(float x, float y, float z)
-    {
-        int X = (int)std::floor(x) & 255,
-            Y = (int)std::floor(y) & 255,
-            Z = (int)std::floor(z) & 255;
+class PerlinNoise
+{
+private:
+	static inline float fade(float t)
+	{
+		return pow(t, 3.0f) * (t * (t * 6.0f - 15.0f) + 10.0f); // 6t^5 + 
+	}
 
-        x -= floor(x);
-        y -= floor(y);
-        z -= floor(z);
+	static inline float Lerp(float a, float b, float t)
+	{
+		return (a * (1.0f - t)) + (b * t);
+	}
 
-        
+public:
+	static inline float Gradient(int hash, float x, float y, float z)
+	{
+		const int h = hash & 15;
+		const float u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
+		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+	}
 
-        double u = fade(x), v = fade(y), w = fade(z);
+	static inline float GetValue(float x, float y, float z)
+	{
+		// Unit coordinates in cube
+		const int unit_x = int(floor(x)) & 255;
+		const int unit_y = int(floor(y)) & 255;
+		const int unit_z = int(floor(z)) & 255;
 
-        int A = perm[X] + Y, AA = perm[A] + Z, AB = perm[A + 1] + Z;
-        int B = perm[X + 1] + Y, BA = perm[B] + Z, BB = perm[B + 1] + Z;
+		// Relative coordinates in cube
+		x = x - floor(x);
+		y = y - floor(y);
+		z = z - floor(z);
 
-        return (lerp(w,
-                    lerp(v, 
-                        lerp(u, 
-                            grad(perm[AA], x  , y, z),
-                            grad(perm[BA], x-1, y, z)
-                        ),
-                        lerp(u, 
-                            grad(perm[AB], x, y-1, z),
-                            grad(perm[BB], x-1, y-1, z)
-                        )
-                    ),
-                    lerp(v,
-                        lerp(u, 
-                            grad(perm[AA+1], x, y, z-1),
-                            grad(perm[BA+1], x-1, y, z-1)
-                        ),
-                        lerp(u,
-                            grad(perm[AB+1], x  , y-1, z-1 ),
-                            grad(perm[BB+1], x-1, y-1, z-1 )
-                        )
-                    )
-            ));
-    }
+		// Compute fading coefficients
+		const float u = fade(x);
+		const float v = fade(y);
+		const float w = fade(z);
+
+		// Hash cube coordinates
+		const int a = Perm[unit_x] + unit_y;
+		const int aa = Perm[a] + unit_z;
+		const int ab = Perm[a + 1] + unit_z;
+		const int b = Perm[unit_x + 1] + unit_y;
+		const int ba = Perm[b] + unit_z;
+		const int bb = Perm[b + 1] + unit_z;
+
+		// Interpolate results
+		const float l1 = Lerp(Gradient(Perm[aa], x, y, z), Gradient(Perm[ba], x - 1, y, z), u);
+		const float l2 = Lerp(Gradient(Perm[ab], x, y - 1, z), Gradient(Perm[bb], x - 1, y - 1, z), u);
+		const float l3 = Lerp(Gradient(Perm[aa + 1], x, y, z - 1), Gradient(Perm[ba + 1], x - 1, y, z - 1), u);
+		const float l4 = Lerp(Gradient(Perm[ab + 1], x, y - 1, z - 1), Gradient(Perm[bb + 1], x - 1, y - 1, z - 1), u);
+		const float l5 = Lerp(l1, l2, v);
+		const float l6 = Lerp(l3, l4, v);
+		return Lerp(l5, l6, w);
+	}
+};
 
 
 
@@ -144,6 +119,7 @@ namespace PerlinNoise {
                                         Values are greater than 1  */
             float amplitude;        /*!< Determines the maximum value of noise*/
             int frequency;          /*!< Determines the scale of the noise */
+            PerlinNoise pn;
 
 
         public:
@@ -164,15 +140,14 @@ namespace PerlinNoise {
                 float amp = amplitude, lac = lacunarity, pers = persistence, freq = frequency;
                 for(int i = 0; i < octaves; i++)
                 {
-                    value += amp * perlinNoise(x*freq, y*freq, z*freq);
-                    // std::cout << "Val: " << perlinNoise(x*freq, y*freq, z*freq) << std::endl;
+                    value += amp * pn.GetValue(x / freq + i*3.141f, y/ freq + i*3.141f, z / freq + i*3.141f);
 
                     maxValue += amp;
                     amp *= pers;
                     freq *= lac;
                 }
-                std::cout << "Val: " << value << std::endl;
-                return value;
+                // std::cout << "Val: " << value << std::endl;
+                return value/maxValue;
             }
     };
 

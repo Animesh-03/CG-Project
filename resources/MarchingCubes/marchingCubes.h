@@ -91,12 +91,13 @@ namespace MC {
 
     int index3DTo1D(int x, int y, int z, int size)
     {
-        return size * size * (z%2) + size * y + x; 
+        int temp = size * size * (z%2) + y * size + x; 
+        return temp;
     }
 
-    void addEdge(mcVec3i *edgeIndexMap, Mesh &mesh, float va, float vb, int axis, int x, int y, int z, int size)
+    void addEdge(mcVec3i *edgeIndexMap, Mesh &mesh, float va, float vb, int axis, int x, int y, int z, int size, float isoLevel)
     {
-        if((va < 0) == (vb < 0))
+        if((va < isoLevel) == (vb < isoLevel))
             return;
         
         Vector3 v(x, y, z);
@@ -106,12 +107,15 @@ namespace MC {
         mesh.vertices.push_back(v);
         Vector3 normal(0,0,0);
         mesh.normals.push_back(normal);
-
-        // std::cout << "Vertex: " << v.x << " " << v.y << " " << v.z << std::endl;  
     }
 
     void calculateNormal(Mesh &mesh, int i, int j, int k)
     {
+        // std::cout << i << " " << j << " " << k << " " << mesh.vertices.size() << std::endl;
+
+        // if(i >= mesh.vertices.size() || j >= mesh.vertices.size() || k >= mesh.vertices.size())
+        //     return;
+
         Vector3 va = mesh.vertices[i];
         Vector3 vb = mesh.vertices[j];
         Vector3 vc = mesh.vertices[k];
@@ -119,10 +123,11 @@ namespace MC {
         Vector3 ab = va - vb;
         Vector3 cb = vc - vb;
 
-        Vector3 normal = ab.cross(ab, cb);
+        Vector3 normal = ab.cross(cb,ab);
         // std::cout << "normals: " << normal.length() << std::endl;
 
         mesh.normals[i] += normal;
+        // std::cout << mesh.normals[i].length() << std::endl;
         mesh.normals[j] += normal;
         mesh.normals[k] += normal;
     }
@@ -133,6 +138,10 @@ namespace MC {
         float unitCubeVertices[8] = {0};
         unsigned int edgeIndices[12];
         mcVec3i* edgeIndexMap = new mcVec3i[domain.size* domain.size * 2];
+        for(int i = 0; i <domain.size* domain.size * 2; i++ )
+        {
+            edgeIndexMap[i] = mcVec3i({0,0,0});
+        }
 
         for(int z = 0; z < domain.size - 1; z++)
         {
@@ -140,14 +149,12 @@ namespace MC {
             {
                 for(int x = 0; x < domain.size - 1; x++)
                 {
-                    // std::cout << x << " " << y << " " << z << "top" << std::endl;
-
                     unitCubeVertices[0] = domain.domain[x][y][z];
                     unitCubeVertices[1] = domain.domain[x+1][y][z];
                     unitCubeVertices[2] = domain.domain[x][y+1][z];
                     unitCubeVertices[3] = domain.domain[x+1][y+1][z];
                     unitCubeVertices[4] = domain.domain[x][y][z+1];
-                    unitCubeVertices[5] = domain.domain[x][y+1][z];
+                    unitCubeVertices[5] = domain.domain[x+1][y][z+1];
                     unitCubeVertices[6] = domain.domain[x][y+1][z+1];
                     unitCubeVertices[7] = domain.domain[x+1][y+1][z+1];
 
@@ -160,33 +167,29 @@ namespace MC {
                     if(config_n == 0 || config_n == 255)
                         continue;
 
-                    // std::cout << x << " " << y << " " << z << "mid" << std::endl;
-
                     if (y == 0 && z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[1], 0, x, y, z, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[1], 0, x, y, z, domain.size, isoLevel);
 					if (z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[3], 0, x, y + 1, z, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[3], 0, x, y + 1, z, domain.size, isoLevel);
 					if (y == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[5], 0, x, y, z + 1, domain.size);
-					addEdge(edgeIndexMap, mesh, unitCubeVertices[6], unitCubeVertices[7], 0, x, y + 1, z + 1, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[5], 0, x, y, z + 1, domain.size, isoLevel);
+					addEdge(edgeIndexMap, mesh, unitCubeVertices[6], unitCubeVertices[7], 0, x, y + 1, z + 1, domain.size, isoLevel);
 
 					if (x == 0 && z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[2], 1, x, y, z, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[2], 1, x, y, z, domain.size, isoLevel);
 					if (z == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[3], 1,x + 1, y, z, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[3], 1,x + 1, y, z, domain.size, isoLevel);
 					if (x == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[6], 1, x, y, z + 1, domain.size);
-					addEdge(edgeIndexMap, mesh, unitCubeVertices[5], unitCubeVertices[7], 1, x + 1, y, z + 1, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[4], unitCubeVertices[6], 1, x, y, z + 1, domain.size, isoLevel);
+					addEdge(edgeIndexMap, mesh, unitCubeVertices[5], unitCubeVertices[7], 1, x + 1, y, z + 1, domain.size, isoLevel);
 
 					if (x == 0 && y == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[4], 2, x, y, z, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[0], unitCubeVertices[4], 2, x, y, z, domain.size, isoLevel);
 					if (y == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[5], 2, x + 1, y, z, domain.size);
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[1], unitCubeVertices[5], 2, x + 1, y, z, domain.size, isoLevel);
 					if (x == 0)
-						addEdge(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[6], 2, x, y + 1, z, domain.size);
-					addEdge(edgeIndexMap, mesh, unitCubeVertices[3], unitCubeVertices[7], 2, x + 1, y + 1, z, domain.size);
-
-                    // std::cout << x << " " << y << " " << z << "bottom" << std::endl;
+						addEdge(edgeIndexMap, mesh, unitCubeVertices[2], unitCubeVertices[6], 2, x, y + 1, z, domain.size, isoLevel);
+					addEdge(edgeIndexMap, mesh, unitCubeVertices[3], unitCubeVertices[7], 2, x + 1, y + 1, z, domain.size, isoLevel);
 
                     edgeIndices[0] = edgeIndexMap[index3DTo1D(x, y, z, domain.size)].x;
 					edgeIndices[1] = edgeIndexMap[index3DTo1D(x, y + 1, z, domain.size)].x;
@@ -204,6 +207,7 @@ namespace MC {
                     unsigned long long int config = mcConfig[config_n];
                     int nTriangles = config & 0xF;
                     int nIndices = nTriangles * 3;
+                    int indicesBase = mesh.indices.size();
                     int offset = 4;
                     
                     for(int i = 0; i < nIndices; i++)
@@ -215,16 +219,16 @@ namespace MC {
 
                     for(int i = 0; i < nTriangles; i++)
                     {
-                        calculateNormal(mesh, i*3, i*3 + 1, i*3 + 2);
+                        calculateNormal(mesh, mesh.indices[indicesBase + i*3], mesh.indices[indicesBase + i*3 + 1], mesh.indices[indicesBase + i*3 + 2]);
                     }
                 }
             }
         }
 
-        // for(int i = 0; i < mesh.normals.size(); i++)
-        // {
-        //     mesh.normals[i].normalize();
-        // }
+        for(int i = 0; i < mesh.normals.size(); i++)
+        {
+            mesh.normals[i].normalize();
+        }
 
         delete[] edgeIndexMap;
     }

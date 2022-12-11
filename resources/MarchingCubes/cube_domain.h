@@ -16,6 +16,7 @@ namespace MC {
                 \param png The reference to the noise generator which assigns each point inside the domain a value
             */
             CubeDomain(int size, PerlinNoise::PerlinNoiseGenerator &png);
+            CubeDomain(int size, PerlinNoise::PerlinNoise &pn);
             CubeDomain();
             //! A 3D array which stores the value of each co-ordinate inside the domain
             std::vector<std::vector<std::vector<float>>> domain;
@@ -42,6 +43,23 @@ MC::CubeDomain::CubeDomain(int size, PerlinNoise::PerlinNoiseGenerator &png)
             for(int k = 0; k < size; k++)
             {
                 domain[i][j][k] = png.GetPerlinNoise(i, j, k);
+            }
+        }
+    }
+}
+
+MC::CubeDomain::CubeDomain(int size, PerlinNoise::PerlinNoise &pn)
+{
+    domain = std::vector<std::vector<std::vector<float>>>(size, std::vector<std::vector<float>>(size, std::vector<float>(size, 0)));
+    this->size = size;
+    
+    for(int i = 0; i < size; i++)
+    {
+        for(int j = 0; j < size; j++)
+        {
+            for(int k = 0; k < size; k++)
+            {
+                domain[i][j][k] = pn.GetValue(i*0.0201f,j*0.0201f,k*0.0201f);
             }
         }
     }

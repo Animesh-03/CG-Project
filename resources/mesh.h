@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <math.h>
+#include <iostream>
 
 namespace MC {
 
@@ -34,7 +35,12 @@ namespace MC {
 
         Vector3 operator+= (Vector3 a)
         {
-            return Vector3(this->x + a.x, this->y + a.y, this->z + a.z);
+            Vector3 res = Vector3(this->x + a.x, this->y + a.y, this->z + a.z);
+            this->x = this->x + a.x;
+            this->y = this->y + a.y;
+            this->z = this->z + a.z;
+            // std::cout << res.length() << std::endl;
+            return res;
         }
 
         static Vector3 cross(Vector3 v1, Vector3 v2)
@@ -50,6 +56,8 @@ namespace MC {
         void normalize()
         {
             float len = length();
+            if(len == 0)
+                len = 1;
             this->x = x/len;
             this->y = y/len;
             this->z = z/len;
