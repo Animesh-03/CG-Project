@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vertices_0',['vertices',['../classMC_1_1Mesh.html#ad1ef970ff3639e02db7658d9523772c1',1,'MC::Mesh']]]
+  ['up_0',['up',['../classCamera_1_1Camera.html#a4e3694b30fc2a0f4a392f66f9b736162',1,'Camera::Camera']]]
 ];

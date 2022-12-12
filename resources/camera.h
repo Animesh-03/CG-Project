@@ -107,7 +107,7 @@ void Camera::Camera::HandleInputs(GLFWwindow * window)
 
     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        position -= speed * up;
+        // position -= speed * up;
     }
 
     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)

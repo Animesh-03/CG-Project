@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Storyboard Documentation</title>
+
+        <link rel="stylesheet" href="docs.css">
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+
+    <body>
+        <nav>
+            <div class="nav-content">
+                <div class="nav-name">
+                    <h3>CG Project</h3>
+                </div>
+                <div class="nav-options">
+                    <a href="#members">Members</a>
+                    <a href="#about">About</a>
+                    <a href="#outputs">Outputs</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <div id="members" class="members pb-8">
+                <h1 class="text-6xl">Procedural Terrain Generation</h1>
+                <p class="text-3xl">Perlin Noise and Marching Cubes</p>
+                <div class="member-list text-xl mt-8">
+                    <ul>
+                        <li>Aditha Venkata Animesh - 2020A7PS0193H</li>
+                        <li>Shivam Shandilya - 2020A7PS2094H</li>
+                        <li>Samarth Aashish Srivastava - 2020A4PS2323H</li>
+                        <li>Manav Bhagchandani - 2019A7PS1343H</li>
+                        <li>Hitesh Garg - 2019B3A70466H</li>
+                        <li>Anirudh Shankar - 2019B5A71494H</li>
+                    </ul>
+                </div>
+            </div>
+    
+            <div id="about" class="about mt-8">
+                <h1 class="text-6xl mb-8">About</h1>
+                    <div id="objective">
+                        <h2 class="text-4xl mb-6">Objective</h2>
+                        <p>
+                            <ul class="list-decimal text-2xl ml-8">
+                                <li>Create a custom Perlin Noise Function using Ken Perlin's improved algorithm</li>
+                                <li>Generate a cubical domain with each Co-oridnate associated with a noise value</li>
+                                <li>Implement Marching Cubes Algorithm on the cubical domain</li>
+                                <li>Implement precise noise control using octaves, persistence, lacunarity and frequency</li>
+                                <li>Study the effects of each parameter on the mesh generated</li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div id="PerlinNoise">
+                        <h2 class="text-4xl mb-6">Perlin Noise</h2>
+                        <p>
+                            Perlin noise is a gradient type noise developed by Ken Perlin and presented in a SIGGRAPH paper in 1985.
+                            This is often used to generate realistic textures and terrain due to its natural-esque gradient.
+                        </p>
+                        <br/>
+                        <div class="m-auto">
+                            <img class="m-auto" src=" https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Pink_red_liquid_using_perlin_noise_%2B_bump_%2B_coloring_%282415197699%29.png/600px-Pink_red_liquid_using_perlin_noise_%2B_bump_%2B_coloring_%282415197699%29.png">
+                            <p class="img-text">An organic surface generated with Perlin noise</p>
+                        </div>
+                        <br />
+                        <p>
+                            Perlin noise is generally a function of 3 different parameters which are usually co-oridnates of a point.
+                            This is very often used on a 2D grid or a cubical space.
+                        </p>
+                        <br/>
+                        <p>
+                            Each grid point is associated with a pseudo random gradient vector.
+                            To find the noise at any point on the grid, the first step is to find the cell inside which the point lies.
+                            For each point on that cell, an offset vector is calculated and then the dot product is obtained between the gradient vector and the offset vector.
+                            The final step is to interpolate between each of the obtained values for every corner.
+                        </p>
+                        <br/>
+                        <p>
+                            Perlin noise can also be controlled to implement better looking textures and smoother noise by using octaves.
+                            <ul class="list-disc ml-8">
+                                <li>Octaves - The number of times the noise value is added</li>
+                                <li>Persistence - The amount of influence each successive octave has</li>
+                                <li>lacunarity - The scale of noise each successive octave uses</li>
+                                <li>frequency - The scale of noise</li>
+                            </ul>
+                        </p>
+                        <br/>
+                        <div class="m-auto">
+                            <img class="m-auto" width="600px" height="600px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/2D_sample_of_Perlin_noise.png/128px-2D_sample_of_Perlin_noise.png">
+                            <p class="img-text">Perlin noise added to itself to create fractals</p>
+                        </div>
+                    </div>
+                    <div id="reference">
+                        <h3 class="text-3xl mb-6">References</h2>
+                        <ol class="list-decimal ml-8">
+                            <li>https://en.wikipedia.org/wiki/Perlin_noise</li>
+                            <li>https://mrl.cs.nyu.edu/~perlin/paper445.pdf</li>
+                            <li>https://cs.nyu.edu/~perlin/noise/</li>
+                            <li>https://adrianb.io/2014/08/09/perlinnoise.html</li>
+                        </ol>
+                    </div>
+                    <br/>
+                    <div id="Marching-Cubes">
+                        <h2 class="text-4xl mb-8">Marching Cubes</h2>
+                        <p>
+                            The marching cubes algorithm works on a dommain whose each co-ordinate is associated with a value.
+                            These values are then used to determine the surface of the mesh to be generated. The threshold on the value is called the isoLevel
+                            and the surface generated is thus called iso surface. 
+                        </p>
+                        <div class="m-auto">
+                            <img width="600px" height="600px" class="m-auto" src="https://i.makeagif.com/media/11-11-2019/CFGhlJ.gif">
+                            <p class="img-text">Marching cubes demonstration</p>
+                        </div>
+                        <p>
+                            THe algorithm works on the fact that there are only 15 unique possible cases that can occur during the generation.
+                            The other cases are simply a symmetrical variation of one of these 15 cases. There are a total of 2^8 = 256 cases which are mapped
+                            to one of these 15 cases.
+                        </p>
+                        <div class="m-auto">
+                            <img width="600px" height="600px" class="m-auto" src="https://www.researchgate.net/publication/220869020/figure/fig2/AS:878862506422272@1586548558509/Marching-Cubes-cases.ppm">
+                            <p class="img-text">15 possible unique variations</p>
+                        </div>
+                        <div id="reference">
+                            <h3 class="text-3xl mb-6">References</h2>
+                            <ol class="list-decimal ml-8">
+                                <li>https://www.dgr582.com/articles/2020/marching-cubes</li>
+                                <li>https://deep110.github.io/posts/blogs/2022-06-25-terrain-editor-marching-cubes.html</li>
+                                <li>http://www.it.hiof.no/~borres/j3d/explain/marching/p-march.html</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+    
+                <div id="outputs" class="frames mt-8">
+                    <h1 class="text-6xl mb-8">Outputs</h1>
+                    <div class="m-auto">
+                        <img width="600px" height="600px" class="m-auto" src="images/100-25f-1o.png">
+                        <p class="img-text-2">100 Size cube domain with 1 octave and 0.3 persistence and 25 frequency</p>
+                    </div>
+                    <div class="m-auto">
+                        <img width="600px" height="600px" class="m-auto" src="images/100-25f-10o-0.8p.png">
+                        <p class="img-text-2">100 Size cube domain with 10 octaves and 0.8 persistence and 25 frequency</p>
+                    </div>
+                    <div class="m-auto">
+                        <img width="600px" height="600px" class="m-auto" src="images/100-10o-10f-0.8p.png">
+                        <p class="img-text-2">100 Size cube domain with 10 octaves and 0.8 persistence and 10 frequency</p>
+                    </div>
+                    <div class="m-auto">
+                        <img width="600px" height="600px" class="m-auto" src="images/100-1o-10f-0.8p.png">
+                        <p class="img-text-2">100 Size cube domain with 1 octave and 0.8 persistence and 10 frequency</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

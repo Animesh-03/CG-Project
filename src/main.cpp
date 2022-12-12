@@ -73,7 +73,7 @@ int main()
     Color::HexColor lightColorHex = Color::HexColor(0x1ecbe1);
     
 
-    PerlinNoise::PerlinNoiseGenerator png(8, 0.3f, 2.0f, 25.0f, 10.5f);
+    PerlinNoise::PerlinNoiseGenerator png(1, 0.8f, 2.0f, 25.0f, 10.0f);
     PerlinNoise::PerlinNoise pn;
     MC::CubeDomain mcDomain(100, png);
 

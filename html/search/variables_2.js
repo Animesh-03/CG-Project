@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rotation_0',['rotation',['../classCamera_1_1Camera.html#a088833b9455b2ef2108c01e574d512a7',1,'Camera::Camera']]]
+  ['normals_0',['normals',['../classMC_1_1Mesh.html#a3d38eb79e95057046adfd46fc1495c38',1,'MC::Mesh']]]
 ];
