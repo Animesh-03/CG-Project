@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['length_0',['length',['../classMC_1_1Vector3.html#a32498ac2f4e7f8156e2ee9186a681a89',1,'MC::Vector3']]]
+  ['getvalue_0',['GetValue',['../classPerlinNoise_1_1PerlinNoise.html#ad57dc4015760723e0b8ed87c9c9fecc5',1,'PerlinNoise::PerlinNoise']]],
+  ['gradient_1',['Gradient',['../classPerlinNoise_1_1PerlinNoise.html#a85699dde97f43936b28d113ae822b0c9',1,'PerlinNoise::PerlinNoise']]]
 ];

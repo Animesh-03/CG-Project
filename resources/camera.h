@@ -16,24 +16,38 @@ namespace Camera {
     class Camera
     {
         public:
-            glm::vec3 position;
-            glm::vec3 rotation = glm::vec3(0.0f, 0.0f, -1.0f);
-            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-
+            glm::vec3 position;     /*! The position of the camera */
+            glm::vec3 rotation = glm::vec3(0.0f, 0.0f, -1.0f); /*! The rotation of the camera */
+            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);     /*! The up vector of the camera */
+            //! The constructor takes in the Window width and height as well as the initial position of the camera
             Camera(int width, int height, glm::vec3 position);
-
+            //! Update the attributes of the camera
+            /*!
+                \param FOV The field of vision of the camera. Lowering this results in a zoom effect
+                \param nearClip The distance of the nearClip Plane from the camera
+                \param farClip The distance of the farClip Plane from the camera
+            */
             void updateMatrix(float FOV, float nearClip, float farClip);
+            //! Update the camera matrix used by the shader to render objects
+            /*! 
+                \param shader The reference to the shaderProgram
+                \param uniform The name of the uniform used in the shader code
+            */
             void Matrix(Shader::Shader &shader, const char* uniform);
             
+            //! Responds to the input by the user to handle camera movement
+            /*!
+                \param window The reference to the window the camera is used in
+            */
             void HandleInputs(GLFWwindow * window);
 
         private:
-            int width;
-            int height;
-            glm::mat4 cameraMatrix;
+            int width;      /*! The width of the window */
+            int height;     /*! The height of the window */
+            glm::mat4 cameraMatrix;     /*! The matrix obtained by projection * view */
 
-            float speed = 0.5f;
-            float sensitivity = 60.0f;
+            float speed = 0.5f;         /*! The speed of camera movement */
+            float sensitivity = 60.0f;  /*! The rotation sensitivity of the camera */
 
             bool firstClick;
 

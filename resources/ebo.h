@@ -7,11 +7,14 @@
 namespace Buffers {
     class EBO {
         public:
-            // The ID alloted to the EBO
-            GLuint ID;
+            GLuint ID;  /*! The ID used by OpenGL to identify the buffer */
+            //!EBO takes in the indices array and the number of indices
             EBO(std::vector<unsigned int>& indices, unsigned int size);
+            // Use the EBO
             void Bind();
+            // Prevent the usage of EBO
             void Unbind();
+            // Delete the EBO
             void Delete();
     };
 }

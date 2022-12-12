@@ -5,14 +5,27 @@
 #include "vbo.h"
 
 namespace Buffers {
+    //! Class for Vertex Array Object
     class VAO {
         public:
-            // The ID alloted to the VAO
-            GLuint ID;
+            
+            GLuint ID;  /*! The ID used by OpenGL to identify the buffer */
             VAO();
+            //! Links the data in the VBO to the VAO
+            /*!
+                \param VBO The Vertex Buffer Object
+                \param numComponents the number of values needed for a single vertex
+                \param layout The layout where the data can be accessed
+                \param type Type of data
+                \param stride The amount of bytes to jump for each vertex to reach the next relevant data
+                \param offset The amount of bytes to skip to reach the relevant data
+            */
             void LinkVBO(VBO& VBO,GLuint numComponents, GLuint layout, GLenum type, GLsizeiptr stride, void* offset);
+            //! Use the VAO
             void Bind();
+            //! Prevent accidentally using the VAO
             void Unbind();
+            //! Delete the VAO
             void Delete();
     };
 }

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['getvalue_0',['GetValue',['../classPerlinNoise_1_1PerlinNoise.html#ad57dc4015760723e0b8ed87c9c9fecc5',1,'PerlinNoise::PerlinNoise']]],
-  ['gradient_1',['Gradient',['../classPerlinNoise_1_1PerlinNoise.html#a85699dde97f43936b28d113ae822b0c9',1,'PerlinNoise::PerlinNoise']]]
+  ['delete_0',['Delete',['../classShader_1_1Shader.html#a2276ac454fd339e7bb0713b995d46bcc',1,'Shader::Shader::Delete()'],['../classBuffers_1_1VAO.html#aff3c599c6fbb3737ab34e887076d851c',1,'Buffers::VAO::Delete()'],['../classBuffers_1_1VBO.html#ae701002aabc55669c7180fb49792e18b',1,'Buffers::VBO::Delete()']]],
+  ['domain_1',['domain',['../classMC_1_1CubeDomain.html#a3f14ae1476d7a16f6d395c64db1a7309',1,'MC::CubeDomain']]]
 ];

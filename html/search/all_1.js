@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['domain_0',['domain',['../classMC_1_1CubeDomain.html#a3f14ae1476d7a16f6d395c64db1a7309',1,'MC::CubeDomain']]]
+  ['bind_0',['Bind',['../classBuffers_1_1VAO.html#aa84cfca9b19f40950ef24e6f59eeb994',1,'Buffers::VAO::Bind()'],['../classBuffers_1_1VBO.html#a073b251d553c10f93dc67ef82133fd1e',1,'Buffers::VBO::Bind()']]]
 ];

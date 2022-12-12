@@ -73,9 +73,10 @@ namespace MC {
     //! Class stores the vertices, normals and indices of the triangles
     class Mesh {
         public:
-            std::vector<Vector3> vertices;
-            std::vector<Vector3> normals;
-            std::vector<unsigned int> indices;
+            //!Stores the vertices' position in the form of a vec3
+            std::vector<Vector3> vertices;      /*! Stores the vertices' position in the form of a vec3 */
+            std::vector<Vector3> normals;       /*! Stores the normals of the vertices in the form of a vec3 */
+            std::vector<unsigned int> indices;  /*! Stores the indices needed to render the vertices */
     };
 }
 

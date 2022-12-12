@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['normalize_0',['normalize',['../classMC_1_1Vector3.html#a44b74f6cc6c86646068e87b88cbca885',1,'MC::Vector3']]]
+  ['indices_0',['indices',['../classMC_1_1Mesh.html#af8669ee46fc28f4cb85d7a6d1ef6a719',1,'MC::Mesh']]]
 ];

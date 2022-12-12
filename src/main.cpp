@@ -70,6 +70,7 @@ int main()
     glViewport(0,0, 1920, 1080);
 
     Color::HexColor clearColor = Color::HexColor(0xa030cf);
+    Color::HexColor lightColorHex = Color::HexColor(0x1ecbe1);
     
 
     PerlinNoise::PerlinNoiseGenerator png(8, 0.3f, 2.0f, 25.0f, 10.5f);
@@ -104,10 +105,11 @@ int main()
 
     VBO.Unbind();
     EBO.Unbind();
+    VAO.Unbind();
 
     Camera::Camera camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, -0.25f, 5.0f));
 
-    glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    glm::vec4 lightColor = glm::vec4(lightColorHex.r, lightColorHex.g, lightColorHex.b, 1.0f);
     glm::vec3 meshPos = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::mat4 meshModel = glm::mat4(1.0f);
     meshModel = glm::translate(meshModel, meshPos);
@@ -147,6 +149,7 @@ int main()
     }
 
     EBO.Delete();
+    VBO_N.Delete();
     VBO.Delete();
     VAO.Delete();
     shaderProgram.Delete();

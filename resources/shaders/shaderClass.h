@@ -11,13 +11,20 @@ std::string readFile(const char * filename);
 namespace Shader {
     class Shader {
         public:
-            GLuint ID;
+            GLuint ID;      /*! The ID used by OpenGL to identify the shader */
+            //! Constructor for shader
+            /*!
+                \param vertexFile The path to the vertexShader file
+                \param fragmentFile THe path to the fragmentShader file
+            */
             Shader(const char* vertexFile, const char* fragmentFile);
-
+            //! Use the Shader Program
             void Activate();
+            //! Delete the Shader porgram
             void Delete(); 
 
         private:
+            //! Check for compile errors on the vertex and fragment shaders
             void compileErrors(unsigned int shader, const char* type);
     };
 }
